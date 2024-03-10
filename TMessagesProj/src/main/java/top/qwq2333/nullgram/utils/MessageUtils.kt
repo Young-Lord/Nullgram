@@ -497,15 +497,6 @@ class MessageUtils(num: Int) : BaseController(num) {
             )
         )
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE)
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val button = TLRPC.TL_keyboardButtonCallback()
-                button.data = editText.getText().toString().toByteArray(StandardCharsets.UTF_8)
-                sendMessagesHelper.sendCallback(true, messageObject, button, fragment)
-                return@setOnEditorActionListener true
-            }
-            false
-        }
         editText.setBackgroundDrawable(null)
         editText.requestFocus()
         editText.setPadding(0, 0, 0, 0)

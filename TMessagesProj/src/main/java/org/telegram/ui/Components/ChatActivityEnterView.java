@@ -2762,7 +2762,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         audioVideoButtonContainer.setAlpha(0.0f);
         audioVideoButtonContainer.setVisibility(GONE);
         audioVideoButtonContainer.setSoundEffectsEnabled(false);
-        sendButtonContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(48, 48));
+        // sendButtonContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(48, 48));
         audioVideoButtonContainer.setFocusable(true);
         audioVideoButtonContainer.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
 //        audioVideoButtonContainer.setOnTouchListener((view, motionEvent) -> {

@@ -113,7 +113,7 @@ public class MainSettingActivity extends BaseActivity {
         } else if (position == websiteRow) {
             Browser.openUrl(getParentActivity(), "https://qwq2333.top");
         } else if (position == sourceCodeRow) {
-            Browser.openUrl(getParentActivity(), "https://github.com/qwq233/Nullgram");
+            Browser.openUrl(getParentActivity(), "https://github.com/Young-Lord/Nullgram");
         } else if (position == licenseRow) {
             presentFragment(new LicenseActivity());
         } else if (position == updateRow) {

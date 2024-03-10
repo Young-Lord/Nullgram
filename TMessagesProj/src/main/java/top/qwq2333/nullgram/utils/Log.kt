@@ -20,7 +20,7 @@
 package top.qwq2333.nullgram.utils
 
 import android.util.Log
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+
 
 object Log {
     const val TAG = "Nullgram"
@@ -50,7 +50,6 @@ object Log {
     @JvmStatic
     fun w(tag: String, msg: String) {
         Log.w(TAG, "$tag: $msg")
-        FirebaseCrashlytics.getInstance().log("$tag: $msg")
     }
 
     /**
@@ -60,7 +59,6 @@ object Log {
     @JvmStatic
     fun e(tag: String, msg: String) {
         Log.e(TAG, "$tag: $msg")
-        FirebaseCrashlytics.getInstance().log("$tag: $msg")
     }
 
     /**

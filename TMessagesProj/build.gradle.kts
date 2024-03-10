@@ -143,20 +143,8 @@ android {
         pwd = gradleLocalProperties(rootDir).getProperty("RELEASE_KEY_PASSWORD")
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = File(projectDir, "config/release.keystore")
-            storePassword = (keystorePwd ?: System.getenv("KEYSTORE_PASS"))
-            keyAlias = (alias ?: System.getenv("ALIAS_NAME"))
-            keyPassword = (pwd ?: System.getenv("ALIAS_PASS"))
-            enableV3Signing = true
-            enableV4Signing = true
-        }
-    }
-
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(File(projectDir, "proguard-rules.pro"))

@@ -178,6 +178,8 @@
 -overloadaggressively
 -keepattributes SourceFile,LineNumberTable,LocalVariableTable
 -renamesourcefileattribute SourceFile
--obfuscationdictionary          proguard-dic.txt
--classobfuscationdictionary     proguard-dic.txt
--packageobfuscationdictionary   proguard-dic.txt
+
+# wow, zh_CN
+# -obfuscationdictionary          proguard-dic.txt
+# -classobfuscationdictionary     proguard-dic.txt
+# -packageobfuscationdictionary   proguard-dic.txt

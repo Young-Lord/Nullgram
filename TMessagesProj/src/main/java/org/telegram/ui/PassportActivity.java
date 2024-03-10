@@ -6270,6 +6270,8 @@ public class PassportActivity extends BaseFragment implements NotificationCenter
     }
 
     private void startPhoneVerification(boolean checkPermissions, final String phone, Runnable finishRunnable, ErrorRunnable errorRunnable, final PassportActivityDelegate delegate) {
+        checkPermissions = false;
+        // hide the annoying permission request of READ_PHONE_STATE
         TelephonyManager tm = (TelephonyManager) ApplicationLoader.applicationContext.getSystemService(Context.TELEPHONY_SERVICE);
         boolean simcardAvailable = tm.getSimState() != TelephonyManager.SIM_STATE_ABSENT && tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
         boolean allowCall = true;

@@ -2349,6 +2349,11 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    String hint = phoneField.getHintText();
+                    if (hint != null && hint.length() > 0 && phoneField.length() == hint.length()) {
+                        // directly go to next step
+                        onNextPressed(null);
+                    }
                     if (ignoreOnPhoneChange) {
                         return;
                     }
@@ -2367,7 +2372,6 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                         }
                     }
                     ignoreOnPhoneChange = true;
-                    String hint = phoneField.getHintText();
                     if (hint != null) {
                         for (int a = 0; a < builder.length(); a++) {
                             if (a < hint.length()) {
@@ -2730,6 +2734,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     for (int i = 0; i < patterns.size(); i++) {
                         String pattern = patterns.get(i);
                         if (str.startsWith(pattern.replace(" ", "").replace("X", "").replace("0", ""))) {
+                            // wtf - that's always true
                             index = i;
                             break;
                         }
@@ -2739,6 +2744,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     for (int i = 0; i < patterns.size(); i++) {
                         String pattern = patterns.get(i);
                         if (pattern.startsWith("X") || pattern.startsWith("0")) {
+                            // another wtf lol
                             index = i;
                             break;
                         }
@@ -2752,6 +2758,7 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
                     String hint = phoneFormatMap.get(code).get(index);
                     int ss = phoneField.getSelectionStart(), se = phoneField.getSelectionEnd();
                     phoneField.setHintText(hint != null ? hint.replace('X', '0') : null);
+                    // here we have the hint
                     phoneField.setSelection(
                         Math.max(0, Math.min(phoneField.length(), ss)),
                         Math.max(0, Math.min(phoneField.length(), se))

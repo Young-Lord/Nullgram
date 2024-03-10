@@ -7311,6 +7311,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
     }
 
     private void updateFieldRight(int attachVisible) {
+        // modify values here may be ok as well, if we want to remove the empty padding.
         if (messageEditText == null || editingMessageObject != null) {
             return;
         }
@@ -7318,18 +7319,18 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         int oldRightMargin = layoutParams.rightMargin;
         if (attachVisible == 1) {
             if (botButton != null && botButton.getVisibility() == VISIBLE && scheduledButton != null && scheduledButton.getVisibility() == VISIBLE && attachLayout != null && attachLayout.getVisibility() == VISIBLE) {
-                layoutParams.rightMargin = dp(146);
+                layoutParams.rightMargin = dp(146-48);
             } else if (botButton != null && botButton.getVisibility() == VISIBLE || notifyButton != null && notifyButton.getVisibility() == VISIBLE || scheduledButton != null && scheduledButton.getTag() != null) {
-                layoutParams.rightMargin = dp(98);
+                layoutParams.rightMargin = dp(98-48);
             } else {
                 layoutParams.rightMargin = dp(50);
             }
         } else if (attachVisible == 2) {
             if (layoutParams.rightMargin != dp(2)) {
                 if (botButton != null && botButton.getVisibility() == VISIBLE && scheduledButton != null && scheduledButton.getVisibility() == VISIBLE && attachLayout != null && attachLayout.getVisibility() == VISIBLE) {
-                    layoutParams.rightMargin = dp(146);
+                    layoutParams.rightMargin = dp(146-48);
                 } else if (botButton != null && botButton.getVisibility() == VISIBLE || notifyButton != null && notifyButton.getVisibility() == VISIBLE || scheduledButton != null && scheduledButton.getTag() != null) {
-                    layoutParams.rightMargin = dp(98);
+                    layoutParams.rightMargin = dp(98-48);
                 } else {
                     layoutParams.rightMargin = dp(50);
                 }

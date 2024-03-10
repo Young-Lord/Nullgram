@@ -2757,6 +2757,10 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 return true;
             }
         };
+        audioVideoButtonContainer.setScaleX(0.1f);
+        audioVideoButtonContainer.setScaleY(0.1f);
+        audioVideoButtonContainer.setAlpha(0.0f);
+        audioVideoButtonContainer.setVisibility(GONE);
         audioVideoButtonContainer.setSoundEffectsEnabled(false);
         sendButtonContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(48, 48));
         audioVideoButtonContainer.setFocusable(true);
@@ -7187,7 +7191,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     }
                 }
 
-                audioVideoButtonContainer.setVisibility(VISIBLE);
+                audioVideoButtonContainer.setVisibility(GONE);
                 runningAnimation = new AnimatorSet();
                 runningAnimationType = 2;
 
@@ -7234,7 +7238,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                             runningAnimationType = 0;
 
                             if (audioVideoButtonContainer != null) {
-                                audioVideoButtonContainer.setVisibility(VISIBLE);
+                                audioVideoButtonContainer.setVisibility(GONE);
                             }
                         }
                     }
@@ -7266,10 +7270,10 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     expandStickersButton.setAlpha(0.0f);
                     expandStickersButton.setVisibility(GONE);
                 }
-                audioVideoButtonContainer.setScaleX(1.0f);
-                audioVideoButtonContainer.setScaleY(1.0f);
-                audioVideoButtonContainer.setAlpha(1.0f);
-                audioVideoButtonContainer.setVisibility(VISIBLE);
+                audioVideoButtonContainer.setScaleX(0.1f);
+                audioVideoButtonContainer.setScaleY(0.1f);
+                audioVideoButtonContainer.setAlpha(0.0f);
+                audioVideoButtonContainer.setVisibility(GONE);
                 if (attachLayout != null) {
                     if (getVisibility() == VISIBLE) {
                         delegate.onAttachButtonShow();
@@ -7905,9 +7909,9 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
 
                     iconsAnimator.playTogether(
                             ObjectAnimator.ofFloat(this, "slideToCancelProgress", 1f),
-                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.SCALE_X, 1f),
-                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.SCALE_Y, 1f),
-                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 1f)
+                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.SCALE_X, 0.1f),
+                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.SCALE_Y, 0.1f),
+                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 0.0f)
                     );
                     if (attachLayout != null) {
                         iconsAnimator.playTogether(
@@ -7943,7 +7947,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 } else {
                     AnimatorSet icons2 = new AnimatorSet();
                     icons2.playTogether(
-                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 1.0f)
+                            ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 0.0f)
                     );
                     if (attachLayout != null) {
                         icons2.playTogether(
@@ -8020,7 +8024,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                         ObjectAnimator.ofFloat(emojiButton, EMOJI_BUTTON_ALPHA, emojiButtonRestricted ? 0.5f : 1.0f),
                         ObjectAnimator.ofFloat(recordDot, View.SCALE_Y, 0),
                         ObjectAnimator.ofFloat(recordDot, View.SCALE_X, 0),
-                        ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 1.0f)
+                        ObjectAnimator.ofFloat(audioVideoButtonContainer, View.ALPHA, 0.0f)
                 );
                 if (controlsView != null) {
                     iconsAnimator.playTogether(ObjectAnimator.ofFloat(controlsView, View.ALPHA, 0));
@@ -8440,10 +8444,10 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 attachLayoutAlpha = 1.0f;
                 updateAttachLayoutParams();
                 attachLayout.setVisibility(VISIBLE);
-                audioVideoButtonContainer.setScaleX(1.0f);
-                audioVideoButtonContainer.setScaleY(1.0f);
-                audioVideoButtonContainer.setAlpha(1.0f);
-                audioVideoButtonContainer.setVisibility(VISIBLE);
+                audioVideoButtonContainer.setScaleX(0.1f);
+                audioVideoButtonContainer.setScaleY(0.1f);
+                audioVideoButtonContainer.setAlpha(0.0f);
+                audioVideoButtonContainer.setVisibility(GONE);
             }
             createScheduledButton();
             if (scheduledButton != null && scheduledButton.getTag() != null) {

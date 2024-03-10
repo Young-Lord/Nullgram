@@ -5259,51 +5259,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     @SuppressLint("NotifyDataSetChanged")
     public void checkAppUpdate(boolean force) {
-        if (ConfigManager.getIntOrDefault(Defines.updateChannel, Defines.stableChannel) == Defines.disableAutoUpdate) {
-            return;
-        }
-        if (!force && System.currentTimeMillis() < ConfigManager.getLongOrDefault(Defines.lastCheckUpdateTime, 0L) + 1000L * 60 * 60) {
-            return;
-        }
-        ConfigManager.putLong(Defines.lastCheckUpdateTime, System.currentTimeMillis());
-        Log.d("checking update");
-        final int accountNum = currentAccount;
-        UpdateUtils.checkUpdate((res, error) -> {
-            AndroidUtilities.runOnUIThread(() -> {
-                if (res != null) {
-                    Log.d("checkUpdate: res is not null");
-                    if (SharedConfig.pendingAppUpdate != null && SharedConfig.pendingAppUpdate.version.equals(res.version)) {
-                        return;
-                    }
-                    if (SharedConfig.setNewAppVersionAvailable(res)) {
-                        if (res.can_not_skip) {
-                            showUpdateActivity(accountNum, res, false);
-                        } else {
-                            drawerLayoutAdapter.notifyDataSetChanged();
-                            ApplicationLoader.applicationLoaderInstance.showUpdateAppPopup(LaunchActivity.this, res, accountNum);
-                        }
-                        NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
-                    }
-                } else {
-                    Log.d("checkUpdate: res is null");
-                    if (force) {
-                        if (!error) {
-                            if (!BuildConfig.isPlay) {
-                                showBulletin(factory -> factory.createErrorBulletin(LocaleController.getString("VersionUpdateNoUpdate", R.string.VersionUpdateNoUpdate)));
-                            } else {
-                                showBulletin(factory -> factory.createSimpleBulletin(R.raw.chats_infotip, LocaleController.getString("NoUpdateAvailablePlay", R.string.NoUpdateAvailablePlay), LocaleController.getString("NoUpdateAvailablePlayDelay", R.string.NoUpdateAvailablePlayDelay)));
-                            }
-                        } else {
-                            AlertsCreator.createSimpleAlert(this, LocaleController.getString("ErrorOccurred", R.string.ErrorOccurred) + "\n" + error).show();
-                        }
-                    }
-                    SharedConfig.setNewAppVersionAvailable(null);
-                    drawerLayoutAdapter.notifyDataSetChanged();
-                }
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.appUpdateAvailable);
-            });
-            return Unit.INSTANCE;
-        });
+        return;
     }
 
     public Dialog showAlertDialog(AlertDialog.Builder builder) {

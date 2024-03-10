@@ -49,41 +49,7 @@ object UpdateUtils {
 
     @JvmStatic
     fun postCheckFollowChannel(ctx: Context, currentAccount: Int) = CoroutineScope(Dispatchers.IO).launch {
-        if (ConfigManager.getBooleanOrFalse(Defines.updateChannelSkip)) return@launch
 
-        val messagesCollector = MessagesController.getInstance(currentAccount)
-        val connectionsManager = ConnectionsManager.getInstance(currentAccount)
-        val messagesStorage = MessagesStorage.getInstance(currentAccount)
-        val updateChannel = messagesCollector.getUserOrChat(channelUsername)
-        val originalChannel = messagesCollector.getUserOrChat(channelUsername)
-
-        if (updateChannel is TLRPC.Chat) checkFollowChannel(ctx, currentAccount, updateChannel) else {
-            connectionsManager.sendRequest(TLRPC.TL_contacts_resolveUsername().apply {
-                username = channelUsername
-            }) { response: TLObject?, error: TLRPC.TL_error? ->
-                if (error == null) {
-                    val res = response as TLRPC.TL_contacts_resolvedPeer
-                    val chat = res.chats.find { it.username == channelUsername } ?: return@sendRequest
-                    messagesCollector.putChats(res.chats, false)
-                    messagesStorage.putUsersAndChats(res.users, res.chats, false, true)
-                    checkFollowChannel(ctx, currentAccount, chat)
-                }
-            }
-        }
-
-        if (originalChannel is TLRPC.Chat) checkOriginalChannel(ctx, currentAccount, originalChannel) else {
-            connectionsManager.sendRequest(TLRPC.TL_contacts_resolveUsername().apply {
-                username = originalChannelUsername
-            }) { response: TLObject?, error: TLRPC.TL_error? ->
-                if (error == null) {
-                    val res = response as TLRPC.TL_contacts_resolvedPeer
-                    val chat = res.chats.find { it.username == channelUsername } ?: return@sendRequest
-                    messagesCollector.putChats(res.chats, false)
-                    messagesStorage.putUsersAndChats(res.users, res.chats, false, true)
-                    checkFollowChannel(ctx, currentAccount, chat)
-                }
-            }
-        }
     }
 
     private fun checkFollowChannel(ctx: Context, currentAccount: Int, channel: TLRPC.Chat) {
@@ -283,98 +249,6 @@ object UpdateUtils {
 
     @JvmStatic
     fun checkUpdate(callback: (TLRPC.TL_help_appUpdate?, Boolean) -> Unit) {
-        if (BuildConfig.isPlay) return
-        if (!UserConfig.getInstance(UserConfig.selectedAccount).isClientActivated) return
-        val (apksChannelID, apksChannelName) = when (ConfigManager.getIntOrDefault(Defines.updateChannel, -1)) {
-            Defines.stableChannel -> stableChannelAPKsID to stableChannelAPKsName
-            Defines.ciChannel -> previewChannelAPKsID to previewChannelAPKsName
-            else -> if (BuildConfig.VERSION_NAME.contains("preview")) previewChannelAPKsID to previewChannelAPKsName else stableChannelAPKsID to stableChannelAPKsName
-        }
-        val accountInstance = AccountInstance.getInstance(UserConfig.selectedAccount)
-        retrieveUpdateMetadata { metadata, error ->
-            if (metadata == null) {
-                Log.d("checkUpdate", "No update metadata found, skip.")
-                callback.invoke(null, error)
-                return@retrieveUpdateMetadata
-            }
-            val req = TLRPC.TL_messages_getHistory().apply {
-                peer = accountInstance.messagesController.getInputPeer(-apksChannelID)
-                min_id = metadata.apkChannelMessageID
-                limit = maxReadCount
-            }
-
-            val sendReq = Runnable {
-                accountInstance.connectionsManager.sendRequest(req) { resp: TLObject?, error: TLRPC.TL_error? ->
-                    if (error != null || resp == null) {
-                        Log.e("checkUpdate", "Error when retrieving update metadata from channel ${error?.text}")
-                        callback.invoke(null, true)
-                        return@sendRequest
-                    }
-                    val res = resp as TLRPC.messages_Messages
-                    for (msg in res.messages) {
-                        if (msg.media == null) {
-                            Log.d("checkUpdate", "res.messages.get(i).media == null")
-                            continue
-                        }
-                        val apkDocument = msg.media.document
-                        val fileName = if (apkDocument.attributes.size == 0) "" else apkDocument.attributes[0].file_name
-                        Log.d("checkUpdate", "file_name： ${apkDocument.attributes[0].file_name}")
-
-                        if (!(fileName.contains(Utils.abi) && fileName.contains(metadata.versionName))) continue
-                        val update = TLRPC.TL_help_appUpdate().apply {
-                            version = metadata.versionName
-                            document = apkDocument
-                            can_not_skip = metadata.canNotSkip
-                            flags = flags or 2
-                        }
-
-                        if (metadata.updateLog != null) {
-                            update.text = metadata.updateLog
-                            update.entities = metadata.updateLogEntities
-                        }
-                        callback.invoke(update, false)
-                        return@sendRequest
-                    }
-                    callback.invoke(null, false)
-                }
-            }
-
-            if (req.peer.access_hash != 0L) {
-                sendReq.run()
-            } else {
-                TLRPC.TL_contacts_resolveUsername().apply {
-                    username = apksChannelName
-                }.let { req2 ->
-                    accountInstance.connectionsManager.sendRequest(req2) { resp: TLObject?, error: TLRPC.TL_error? ->
-                        if (error != null || resp == null) {
-                            Log.e("checkUpdate", "Error when retrieving update metadata from channel ${error?.text}")
-                            callback.invoke(null, true)
-                            return@sendRequest
-                        }
-                        val res = if (resp is TLRPC.TL_contacts_resolvedPeer) {
-                            resp
-                        } else {
-                            Log.e("checkUpdate", "Error when checking update, unable to resolve apk channel, unexpected responseType ${resp::class.java.name}")
-                            callback.invoke(null, true)
-                            return@sendRequest
-                        }
-                        accountInstance.messagesController.putUsers(res.users, false)
-                        accountInstance.messagesController.putChats(res.chats, false)
-                        accountInstance.messagesStorage.putUsersAndChats(res.users, res.chats, false, true)
-                        if (res.chats == null || res.chats.isEmpty()) {
-                            Log.e("checkUpdate", "Error when checking update, unable to resolve apk channel, chats is null or empty")
-                            callback.invoke(null, true)
-                            return@sendRequest
-                        }
-                        req.peer = TLRPC.TL_inputPeerChannel().apply {
-                            channel_id = res.chats[0].id
-                            access_hash = res.chats[0].access_hash
-                        }
-                        sendReq.run()
-                    }
-                }
-            }
-        }
     }
 
     data class UpdateMetadata(

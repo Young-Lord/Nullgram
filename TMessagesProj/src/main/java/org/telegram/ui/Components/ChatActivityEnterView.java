@@ -4797,13 +4797,12 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 // https://www.android-doc.com/reference/android/view/inputmethod/EditorInfo.html
-                if (i == EditorInfo.IME_ACTION_SEND || i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                if (i == EditorInfo.IME_ACTION_SEND || i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT) {
                     sendMessage();
                     return true;
                 } else if (keyEvent != null && i == EditorInfo.IME_NULL) {
-                    // send sth. when enter pressed
-                    // cannot be reached, as IME_NULL == IME_ACTION_UNSPECIFIED == 0
-                    // that is to say, we cannot input a enter.
+                    // send sth. when enter pressed, can be toggled on in settings -> Theme
+                    // please note that IME_NULL == IME_ACTION_UNSPECIFIED == 0
                     if ((ctrlPressed || sendByEnter) && keyEvent.getAction() == KeyEvent.ACTION_DOWN && editingMessageObject == null) {
                         sendMessage();
                         return true;
